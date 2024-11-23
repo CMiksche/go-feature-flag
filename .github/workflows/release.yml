@@ -38,6 +38,6 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: release --clean --timeout 60m --skip-push --snapshot
+          args: release --clean --timeout 60m --skip=publish --snapshot
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
