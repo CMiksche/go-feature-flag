@@ -1,7 +1,8 @@
 name: Release
 on:
-  release:
-    types: [ published ]
+  push:
+    branches:
+      - test-ci
 
 jobs:
   pre-version-check:
@@ -39,18 +40,12 @@ jobs:
     needs: integration-tests
     runs-on: ubuntu-latest
     steps:
-      - name: Maximize build space
-        uses: easimon/maximize-build-space@master
-        with:
-          root-reserve-mb: 512
-          swap-size-mb: 1024
-          remove-dotnet: 'true'
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
+      - name: free space
+        run: ./.github/ci-scripts/free_space.sh
       - name: Fetch all tags
         run: git fetch --force --tags
 
@@ -75,7 +70,7 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: release --clean --timeout 60m
+          args: release --clean --timeout 60m --skip-push --snapshot
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
 
